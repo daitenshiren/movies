@@ -78,6 +78,7 @@ export default {
   },
   methods: {
     loadMovies(page_url) {
+      this.movie_id = "";
       let vm = this;
 
       page_url = page_url || "/api/movies";

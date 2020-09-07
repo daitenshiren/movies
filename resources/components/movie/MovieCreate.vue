@@ -14,12 +14,14 @@
           </div>
           <div class="row">
             <div class="input-field col s12">
-              <input
-                placeholder="Release Date (m/dd/yyyy)"
-                type="text"
-                id="release_date"
+              <datepicker
+                placeholder="Relase Date"
+                style="color: #000000"
+                name="release_date"
+                :format="date_format"
+                :value="movie.release_date"
                 v-model="movie.release_date"
-              />
+              ></datepicker>
             </div>
           </div>
           <div class="row">
@@ -49,7 +51,12 @@
 </template>
 
 <script>
+import Datepicker from "vuejs-datepicker";
+
 export default {
+  components: {
+    Datepicker,
+  },
   props: {
     movieId: Number,
   },
@@ -62,6 +69,7 @@ export default {
         duration: "",
         genre: "",
       },
+      date_format: "M/d/yyyy",
       btnAdd: true,
       btnUpdate: false,
       btnCancel: false,
@@ -71,6 +79,23 @@ export default {
     movieId: function (id) {
       if (id.length !== 0) {
         this.fetchMovie(id);
+      }
+    },
+    "movie.release_date": function (date) {
+      if (date instanceof Date) {
+        console.log(date);
+        let dd = String(date.getDate()).padStart(1);
+        let mm = String(date.getMonth() + 1).padStart(2, "0"); //January is 0!
+        let yyyy = date.getFullYear();
+
+        let formattedDate = mm + "/" + dd + "/" + yyyy;
+        this.movie.release_date = formattedDate;
+      }
+    },
+    "movie.duration": function (data) {
+      if (isNaN(data)) {
+        confirm("Duration can only be a number or decimal");
+        this.movie.duration = "";
       }
     },
   },
@@ -104,6 +129,7 @@ export default {
       this.btnCancel = false;
     },
     udpateMovie(id) {
+      let self = this;
       fetch("api/movie", {
         method: "PUT",
         body: JSON.stringify(this.movie),
@@ -113,31 +139,32 @@ export default {
       })
         .then((res) => res.json())
         .then((data) => {
-          this.cancelled();
+          if (confirm("Successfully Updated Movie Information.")) {
+            self.$emit("reloadMovies", true);
+            self.cancelled();
+          }
 
-          alert("Successfully Updated Movie Information.");
-
-          this.$emit("reloadMovies", true);
+          // location.reload();
         })
         .catch((err) => console.log(err));
     },
     addMovie() {
-      fetch("api/movie", {
-        method: "POST",
-        body: JSON.stringify(this.movie),
-        headers: {
-          "content-type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          this.cancelled();
-
-          alert("Successfully Added Movie Information.");
-
-          this.$emit("reloadMovies", true);
-        })
-        .catch((err) => console.log(err));
+      console.log(this.checkProperties(this.movie));
+      //   fetch("api/movie", {
+      //     method: "POST",
+      //     body: JSON.stringify(this.movie),
+      //     headers: {
+      //       "content-type": "application/json",
+      //     },
+      //   })
+      //     .then((res) => res.json())
+      //     .then((data) => {
+      //       if (confirm("Successfully Added Movie Information.")) {
+      //         self.$emit("reloadMovies", true);
+      //         self.cancelled();
+      //       }
+      //     })
+      //     .catch((err) => console.log(err));
     },
   },
 };
@@ -147,6 +174,7 @@ export default {
 input {
   background: #fff !important;
   padding: 0 10px !important;
+  color: rgba(0, 0, 0, 0.42);
 }
 
 input::placeholder {

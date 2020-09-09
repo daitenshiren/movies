@@ -129,7 +129,6 @@ export default {
       this.btnCancel = false;
     },
     udpateMovie(id) {
-      let self = this;
       fetch("api/movie", {
         method: "PUT",
         body: JSON.stringify(this.movie),
@@ -140,31 +139,28 @@ export default {
         .then((res) => res.json())
         .then((data) => {
           if (confirm("Successfully Updated Movie Information.")) {
-            self.$emit("reloadMovies", true);
-            self.cancelled();
+            this.$emit("reloadMovies", true);
+            this.cancelled();
           }
-
-          // location.reload();
         })
         .catch((err) => console.log(err));
     },
     addMovie() {
-      console.log(this.checkProperties(this.movie));
-      //   fetch("api/movie", {
-      //     method: "POST",
-      //     body: JSON.stringify(this.movie),
-      //     headers: {
-      //       "content-type": "application/json",
-      //     },
-      //   })
-      //     .then((res) => res.json())
-      //     .then((data) => {
-      //       if (confirm("Successfully Added Movie Information.")) {
-      //         self.$emit("reloadMovies", true);
-      //         self.cancelled();
-      //       }
-      //     })
-      //     .catch((err) => console.log(err));
+      fetch("api/movie", {
+        method: "POST",
+        body: JSON.stringify(this.movie),
+        headers: {
+          "content-type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (confirm("Successfully Added Movie Information.")) {
+            this.$emit("reloadMovies", true);
+            this.cancelled();
+          }
+        })
+        .catch((err) => console.log(err));
     },
   },
 };

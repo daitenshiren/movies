@@ -2085,7 +2085,8 @@ __webpack_require__.r(__webpack_exports__);
       this.btnCancel = false;
     },
     udpateMovie: function udpateMovie(id) {
-      var self = this;
+      var _this2 = this;
+
       fetch("api/movie", {
         method: "PUT",
         body: JSON.stringify(this.movie),
@@ -2096,30 +2097,34 @@ __webpack_require__.r(__webpack_exports__);
         return res.json();
       }).then(function (data) {
         if (confirm("Successfully Updated Movie Information.")) {
-          self.$emit("reloadMovies", true);
-          self.cancelled();
-        } // location.reload();
+          _this2.$emit("reloadMovies", true);
 
+          _this2.cancelled();
+        }
       })["catch"](function (err) {
         return console.log(err);
       });
     },
     addMovie: function addMovie() {
-      console.log(this.checkProperties(this.movie)); //   fetch("api/movie", {
-      //     method: "POST",
-      //     body: JSON.stringify(this.movie),
-      //     headers: {
-      //       "content-type": "application/json",
-      //     },
-      //   })
-      //     .then((res) => res.json())
-      //     .then((data) => {
-      //       if (confirm("Successfully Added Movie Information.")) {
-      //         self.$emit("reloadMovies", true);
-      //         self.cancelled();
-      //       }
-      //     })
-      //     .catch((err) => console.log(err));
+      var _this3 = this;
+
+      fetch("api/movie", {
+        method: "POST",
+        body: JSON.stringify(this.movie),
+        headers: {
+          "content-type": "application/json"
+        }
+      }).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        if (confirm("Successfully Added Movie Information.")) {
+          _this3.$emit("reloadMovies", true);
+
+          _this3.cancelled();
+        }
+      })["catch"](function (err) {
+        return console.log(err);
+      });
     }
   }
 });
